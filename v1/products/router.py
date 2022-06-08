@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session
 
 from v1.products.schema import ResponseProduct, ResponseSuccess
 from core.settings.database import get_db
+from v1.user.schema import UserSession
+from core.utils.permissions import get_auth_user_from_session
 
 from v1.products.controller import *
 

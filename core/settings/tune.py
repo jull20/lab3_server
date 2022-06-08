@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from starlette.middleware.sessions import SessionMiddleware
 from v1 import authRouter, productsRouter, reportRouter, userRouter
 
 def set_routers(app: FastAPI):
@@ -9,4 +10,7 @@ def set_routers(app: FastAPI):
 
 
 def use_session(app: FastAPI):
-    pass
+    app.add_middleware(
+        SessionMiddleware,
+        secret_key="Supersecret_key",
+    )

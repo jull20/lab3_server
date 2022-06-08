@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy.orm import Session
 
-from v1.auth.schema import ResponseSuccess
+from v1.auth.schema import ResponseSuccess, ResponseLoginSuccess, RequestRegisterSchema, RequestLoginSchema, login_invalid_responses, register_invalid_responses
 from core.settings.database import get_db
+from v1.auth.controller import login_service, logout_service, register_service
 
 
 router = APIRouter(prefix='/auth', tags=['auth'])
@@ -11,27 +12,29 @@ router = APIRouter(prefix='/auth', tags=['auth'])
 @router.post(
     path='/register',
     summary="Регистрация нового пользователя",
-    response_model=ResponseSuccess,
-    responses={} # TODO: wrong fields
+    response_model=ResponseLoginSuccess,
+    responses=register_invalid_responses
 )   
 async def register(
-    # TODO: userSession and bodyScheme here
+    request: Request,
+    registerBody: RequestRegisterSchema,
     db: Session = Depends(get_db)
-):
-    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not implemented")
+):  
+    return await register_service(db, request, registerBody)
 
 
 @router.post(
     path='/login',
     summary='Вход в аккаунт, получение сессии',
-    response_model=ResponseSuccess,
-    responses={} # TODO: wrong username or password
+    response_model=ResponseLoginSuccess,
+    responses=login_invalid_responses
 )
 async def login(
-    # TODO: userSession and bodyScheme here
+    request: Request,
+    loginBody: RequestLoginSchema,
     db: Session = Depends(get_db)
 ):
-    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not implemented")
+    return await login_service(db, request, loginBody)
 
 
 @router.post(
@@ -40,7 +43,7 @@ async def login(
     response_model=ResponseSuccess
 )
 async def logout(
-    # TODO: userSession here
+    request: Request,
     db: Session = Depends(get_db)
 ):
-    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not implemented")
+    return await logout_service(db, request)
