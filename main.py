@@ -1,6 +1,10 @@
 from fastapi import FastAPI
 import uvicorn  
 from core.settings import PORT, DEBUG, set_routers, use_session
+from core.settings import Base, engine
+from models import *
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
