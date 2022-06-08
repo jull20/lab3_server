@@ -4,6 +4,8 @@ from sqlalchemy.orm import Session
 from v1.products.schema import ResponseProduct, ResponseSuccess
 from core.settings.database import get_db
 
+from v1.products.controller import *
+
 
 router = APIRouter(prefix='/products', tags=['products'])
 
@@ -14,10 +16,9 @@ router = APIRouter(prefix='/products', tags=['products'])
     response_model=list[ResponseProduct],
 )
 async def get_all_products(
-    # TODO: userSession here
     db: Session = Depends(get_db)
 ):
-    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not implemented")
+    return await get_all_products_service(db)
 
 
 @router.post(
@@ -45,10 +46,9 @@ async def get_product_by_id(
         example=1,
         ge=1,
     ),
-    # TODO: userSession here
     db: Session = Depends(get_db)
 ):
-    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not implemented")
+    return await get_product_by_id_service(db, productId)
 
 
 @router.post(
