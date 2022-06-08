@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Path, Depends
 from sqlalchemy.orm import Session
 
 from v1.products.schema import ResponseProduct, ResponseSuccess
-from core.settings import get_db
+from core.settings.database import get_db
 
 
 router = APIRouter(prefix='/products', tags=['products'])
