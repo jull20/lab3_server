@@ -1,6 +1,8 @@
-from fastapi import APIRouter, HTTPException, status, Path
+from fastapi import APIRouter, HTTPException, status, Path, Depends
+from sqlalchemy.orm import Session
 
 from v1.products.schema import ResponseProduct, ResponseSuccess
+from core.settings import get_db
 
 
 router = APIRouter(prefix='/products', tags=['products'])
@@ -12,7 +14,8 @@ router = APIRouter(prefix='/products', tags=['products'])
     response_model=list[ResponseProduct],
 )
 async def get_all_products(
-    # TODO: db and userSession here
+    # TODO: userSession here
+    db: Session = Depends(get_db)
 ):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not implemented")
 
@@ -24,7 +27,8 @@ async def get_all_products(
     responses={} # TODO: something wrong
 )
 async def create_new_product(
-    #TODO: db, userSession and bodyScheme here
+    #TODO: userSession and bodyScheme here
+    db: Session = Depends(get_db)
 ):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not implemented")
 
@@ -41,7 +45,8 @@ async def get_product_by_id(
         example=1,
         ge=1,
     ),
-    # TODO: db and userSession here
+    # TODO: userSession here
+    db: Session = Depends(get_db)
 ):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not implemented")
 
@@ -58,7 +63,8 @@ async def set_rate_to_product_by_id(
         example=1,
         ge=1,
     ),
-    # TODO: db and userSession and bodyScheme here
+    # TODO: userSession and bodyScheme here
+    db: Session = Depends(get_db)
 ):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not implemented")
 
@@ -75,6 +81,7 @@ async def buy_product_by_id(
         example=1,
         ge=1,
     ),
-    # TODO: db and userSession and bodyScheme here
+    # TODO: userSession and bodyScheme here
+    db: Session = Depends(get_db)
 ):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not implemented")

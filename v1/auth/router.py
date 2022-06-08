@@ -1,6 +1,8 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
+from sqlalchemy.orm import Session
 
 from v1.auth.schema import ResponseSuccess
+from core.settings import get_db
 
 
 router = APIRouter(prefix='/auth', tags=['auth'])
@@ -13,7 +15,8 @@ router = APIRouter(prefix='/auth', tags=['auth'])
     responses={} # TODO: wrong fields
 )   
 async def register(
-    # TODO: db, userSession and bodyScheme here
+    # TODO: userSession and bodyScheme here
+    db: Session = Depends(get_db)
 ):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not implemented")
 
@@ -25,6 +28,7 @@ async def register(
     responses={} # TODO: wrong username or password
 )
 async def login(
-    # TODO: db, userSession and bodyScheme here
+    # TODO: userSession and bodyScheme here
+    db: Session = Depends(get_db)
 ):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not implemented")
