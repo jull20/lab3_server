@@ -33,7 +33,7 @@ async def create_product_service(db: Session, user: UserSession, product_name: s
     if not product_photo:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail='Product photo required')
     
-    public_file_path = f"public/imgs/{uuid.uuid4()}.jpg"
+    public_file_path = f"public/imgs/{uuid.uuid4()}.png"
 
     with open(public_file_path, 'wb') as target:
         target.write(product_photo.file.read())
