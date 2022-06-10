@@ -1,5 +1,6 @@
 from datetime import date, datetime
-from fastapi import HTTPException, status
+import uuid
+from fastapi import HTTPException, UploadFile, status
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
 from psycopg2.errors import ForeignKeyViolation
@@ -26,6 +27,25 @@ async def get_all_products_service(db: Session):
         ),
         products
     ))
+
+
+async def create_product_service(db: Session, user: UserSession, product_name: str, product_photo: UploadFile | None, price: float, amount: int):
+    if not product_photo:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail='Product photo required')
+    
+    public_file_path = f"public/imgs/{uuid.uuid4()}.jpg"
+
+    with open(public_file_path, 'wb') as target:
+        target.write(product_photo.file.read())
+
+    product = Product(name=product_name, photo=public_file_path, price=price, start_amount=amount)
+    try:
+        db.add(product)
+        db.commit()
+    except:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Something wrong')
+    
+    return ResponseSuccess()
 
 
 async def get_product_by_id_service(db: Session, productId: int):
@@ -57,7 +77,7 @@ async def post_product_rate_by_id(db: Session, user: UserSession, productId: int
     return ResponseSuccess()
 
 
-async def post_product_buy_bi_id(db: Session, user: UserSession, productId: int, amount: int):
+async def post_product_buy_by_id(db: Session, user: UserSession, productId: int, amount: int):
     try:
         product: Product = db.query(Product.id, Product.start_amount, func.sum(Order.amount).label('ordered')).filter(Product.id == productId).join(Order, Order.product_id == Product.id, isouter=True).join(Rate, Rate.product_id == Product.id, isouter=True).group_by(Product.id).one()
     except:

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query, status, Path, Depends
+from fastapi import APIRouter, HTTPException, Query, UploadFile, status, Path, Depends
 from sqlalchemy.orm import Session
 
 from v1.products.schema import ResponseProduct, ResponseSuccess
@@ -30,11 +30,25 @@ async def get_all_products(
     responses={} # TODO: something wrong
 )
 async def create_new_product(
-    #TODO: bodyScheme here
+    product_name: str = Query(
+        description='Название товара',
+        example='AirPods Max'
+    ),
+    product_photo: UploadFile | None = None,
+    price: float = Query(
+        description='Цена товара',
+        example=14.99,
+        gt=0
+    ),
+    amount: int = Query(
+        description='Начальное количество товара',
+        example=30,
+        gt=0
+    ),
     user: UserSession = Depends(get_admin_user_from_session),
     db: Session = Depends(get_db)
 ):
-    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not implemented")
+   return await create_product_service(db, user, product_name, product_photo, price, amount)
 
 
 @router.get(
@@ -98,4 +112,4 @@ async def buy_product_by_id(
     user: UserSession = Depends(get_auth_user_from_session),
     db: Session = Depends(get_db)
 ):
-    return await post_product_buy_bi_id(db, user, productId, amount)
+    return await post_product_buy_by_id(db, user, productId, amount)
