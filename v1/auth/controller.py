@@ -8,7 +8,6 @@ def _hash_password(password: str):
     return 'sec'.join(password)
 
 async def login_service(db: Session, request: Request, loginBody: RequestLoginSchema):
-    print(request.session)
     try:
         user: User = db.query(User).filter(User.email == loginBody.email, User.hashed_password == _hash_password(loginBody.password)).one()
     except:
@@ -29,7 +28,6 @@ async def login_service(db: Session, request: Request, loginBody: RequestLoginSc
 
 
 async def register_service(db: Session, request: Request, registerBody: RequestRegisterSchema):
-    print(request.session)
     user = User(username=registerBody.username, 
                 email=registerBody.email, 
                 name=registerBody.name, 

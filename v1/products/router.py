@@ -1,10 +1,10 @@
-from fastapi import APIRouter, HTTPException, status, Path, Depends
+from fastapi import APIRouter, HTTPException, Query, status, Path, Depends
 from sqlalchemy.orm import Session
 
 from v1.products.schema import ResponseProduct, ResponseSuccess
 from core.settings.database import get_db
 from v1.user.schema import UserSession
-from core.utils.permissions import get_auth_user_from_session
+from core.utils.permissions import get_auth_user_from_session, get_admin_user_from_session
 
 from v1.products.controller import *
 
@@ -30,7 +30,8 @@ async def get_all_products(
     responses={} # TODO: something wrong
 )
 async def create_new_product(
-    #TODO: userSession and bodyScheme here
+    #TODO: bodyScheme here
+    user: UserSession = Depends(get_admin_user_from_session),
     db: Session = Depends(get_db)
 ):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not implemented")
@@ -65,10 +66,16 @@ async def set_rate_to_product_by_id(
         example=1,
         ge=1,
     ),
-    # TODO: userSession and bodyScheme here
+    rate_value: float = Query(
+        description='Значение рейтинга продукта (от 1 до 5)',
+        example=4,
+        ge=1.0,
+        le=5.0
+    ),
+    user: UserSession = Depends(get_auth_user_from_session),
     db: Session = Depends(get_db)
 ):
-    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not implemented")
+    return await post_product_rate_by_id(db, user, productId, rate_value)
 
 
 @router.post(
@@ -83,7 +90,12 @@ async def buy_product_by_id(
         example=1,
         ge=1,
     ),
-    # TODO: userSession and bodyScheme here
+    amount: int = Query(
+        description='Количество товара к покупке',
+        example=2,
+        ge=1
+    ),
+    user: UserSession = Depends(get_auth_user_from_session),
     db: Session = Depends(get_db)
 ):
-    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not implemented")
+    return await post_product_buy_bi_id(db, user, productId, amount)

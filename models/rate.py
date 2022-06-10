@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from core.settings.database import Base
@@ -6,6 +6,9 @@ from core.settings.database import Base
 
 class Rate(Base):
     __tablename__ = "rates"
+    __table_args__ = (
+        UniqueConstraint('user_id', 'product_id', name="account_collection_unique"),
+    )
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), index=True)
