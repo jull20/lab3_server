@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 import uvicorn  
-from core.settings.tune import set_routers, use_session
+from core.settings.tune import set_routers, use_session, use_cors
 from core.settings.environment import PORT, DEBUG
 from core.settings.database import Base, engine
 from models import *
@@ -12,6 +12,7 @@ app = FastAPI()
 
 set_routers(app=app)
 use_session(app=app)
+use_cors(app=app)
 app.mount("/public", StaticFiles(directory="public"), name="site")
 
 if __name__ == "__main__":
